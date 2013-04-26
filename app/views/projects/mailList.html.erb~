@@ -1,0 +1,13 @@
+<h1><%= @project.name.upcase %>Mail Lists</h1>
+<div id = "navbar"> 
+  <a href="/">Home</a>
+  <%= link_to "All Projects",projects_path %>
+  <%= link_to "New Project", new_project_path %>
+  <%= link_to "Bug Report", bug_project_path %>
+  <%= link_to "Git Report", git_project_path %>
+  <%= link_to "Maillists Report", mailList_project_path %>
+  <%= link_to "IRC Channels Report", ircChannel_project_path %>
+</div>
+<div id = "content">
+<h2>Under Construction</h2>
+</div>

@@ -1,0 +1,29 @@
+<%- model_class = Project -%>
+<div class = "page-header">
+  <h1>Edit <%= @project.name %></h1>
+</div>
+
+<div class = "row-fluid">
+  <div class = "span5">
+    <div class="well well-large">
+      <h2>Latest Projects</h2>
+      <ul>
+	<% @projects.each do |project| %>
+	  <li>
+	    <%= link_to project.name, project_path(project) %>
+	  </li>
+	<% end %>
+      </ul>
+    </div>
+  </div>
+  <div class = "span7">
+    <div class = "well well-large">
+      <h2>Latest News!</h2> <!-- This would be replaced to get news from database and to let authorized persons only write news. -->
+      <p>The prototype is ready!</p>
+    </div>
+  </div>
+</div>
+<div class="page-header">
+  <h1><%=t '.title', :default => [:'helpers.titles.edit', 'Edit %{model}'], :model => model_class.model_name.human %></h1>
+</div>
+<%= render :partial => 'form' %>

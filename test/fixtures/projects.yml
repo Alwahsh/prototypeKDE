@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  describtion: MyText
+  bugLists: MyText
+  gitRepositories: MyText
+  mailLists: MyText
+  ircChannels: MyText
+
+two:
+  name: MyString
+  describtion: MyText
+  bugLists: MyText
+  gitRepositories: MyText
+  mailLists: MyText
+  ircChannels: MyText
