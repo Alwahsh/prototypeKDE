@@ -1,0 +1,13 @@
+o: ActiveSupport::Cache::Entry	:@compressedF:@expires_in0:@created_atf1367196234.825309:@value"Í[I"À/*
+
+
+  Use Font Awesome icons (default)
+  To use Glyphicons sprites instead of Font Awesome, replace with "require twitter-bootstrap-static/sprites"
+
+  */
+
+
+  body {
+    padding-top:40px;
+  }
+:EF

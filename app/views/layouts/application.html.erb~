@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html <%= "dir=rtl" if !t('ltr') %>>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
@@ -36,7 +36,7 @@
   </head>
   <body>
 
-    <div class="navbar navbar-fluid-top">
+    <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
           <a class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse">
@@ -44,38 +44,26 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="#">PrototypeKDE</a>
+          <a class="brand" href="/"><%= t :site_title %></a>
           <div class="container-fluid nav-collapse">
             <ul class="nav">
-              <li><%= link_to "Link1", "/path1"  %></li>
-              <li><%= link_to "Link2", "/path2"  %></li>
-              <li><%= link_to "Link3", "/path3"  %></li>
+              <li><%= link_to  t('home'), "/"  %></li>
+              <li><%= link_to t('all_projects'), projects_path  %></li>
+              <li><%= link_to t('new_project'), new_project_path  %></li>
             </ul>
+            <div class="btn-group pull-right">
+	      <a class="btn">English</a>
+	      <a class="btn">عربى</a>
+	    </div>
           </div><!--/.nav-collapse -->
         </div>
       </div>
     </div>
 
     <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span3">
-          <div class="well sidebar-nav">
-            <ul class="nav nav-list">
-              <li class="nav-header">Sidebar</li>
-              <li><%= link_to "Link1", "/path1"  %></li>
-              <li><%= link_to "Link2", "/path2"  %></li>
-              <li><%= link_to "Link3", "/path3"  %></li>
-            </ul>
-          </div><!--/.well -->
-        </div><!--/span-->
-        <div class="span9">
           <%= bootstrap_flash %>
           <%= yield %>
-        </div>
-      </div><!--/row-->
-
       <footer>
-        <p>&copy; Company 2013</p>
       </footer>
 
     </div> <!-- /container -->
@@ -84,6 +72,5 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <%= javascript_include_tag "application" %>
-
   </body>
 </html>

@@ -1,17 +1,22 @@
 require 'open-uri'
+#require 'feedzirra'
 
 
-def search_bugzilla include_fields,limit=0,offset=0
-  if limit==0
-    full_string = 'https://bugs.kde.org/jsonrpc.cgi?method=Bug.search&params=[{"product":'+convert_array_to_string_array(get_array(bugLists))+',"include_fields":'+ convert_array_to_string_array(include_fields) +'}]'
-  else
-    full_string = 'https://bugs.kde.org/jsonrpc.cgi?method=Bug.search&params=[{"product":'+convert_array_to_string_array(get_array(bugLists))+',"include_fields":'+ convert_array_to_string_array(include_fields) +',"limit":'+limit.to_s+',"offset":'+offset.to_s+'}]'
-    Rails.cache.write "d1",full_string
-  end
+def search_bugzilla include_fields,limit=0,offset=0,getAll=false,creation_time = nil
+  full_string = 'https://bugs.kde.org/jsonrpc.cgi?method=Bug.search&params=[{"product":'+convert_array_to_string_array(get_array(bugLists))+',"include_fields":'+ convert_array_to_string_array(include_fields)
+  full_string += ',"status":["UNCONFIRMED","CONFIRMED","ASSIGNED","REOPENED"]' if !getAll
+  full_string += ',"limit":'+limit.to_s+',"offset":'+offset.to_s if limit != 0
+  full_string += ',"creation_time":"'+ get_time_as_string(creation_time) +'"' if creation_time
+  full_string += '}]'
   unparsed = open(URI::encode(full_string))
   parsed = ActiveSupport::JSON.decode(unparsed)
   return parsed["result"]["bugs"] if parsed["result"]
   Rails.cache.write "error", parsed["error"]
+end
+
+def get_time_as_string time
+  return time.strftime("%Y-%m-%dT%H:%M:%SZ")
+  time.year + '-' + time.month + '-' + time.mday + 'T' + time.hour + ':' + time.minute + ':' + time.second + 'Z'
 end
 
 def get_array text_to_parse
@@ -28,10 +33,9 @@ def convert_array_to_string_array to_convert
 end
 
 def fetch_bugs 
-  is_successful = search_bugzilla ["id","status"]
+  is_successful = search_bugzilla ["id","status"],0,0,true
   if is_successful
     num = is_successful.length
-    Rails.cache.write('numBugs'+id.to_s , num)
     Rails.cache.write('bugsFor'+id.to_s , is_successful)
     return true
   end
@@ -42,20 +46,34 @@ def count_bugs
   is_successful = search_bugzilla []
   if is_successful
     num = is_successful.length
-    Rails.cache.write('numBugs'+id.to_s , num)
+    Rails.cache.write('numBugs'+id.to_s , [num,Time.now])
     return true
   end
   return false
 end
 
+=begin
+def search_git
+  feed = Feedzirra::Feed.fetch_and_parse("http://quickgit.kde.org/?p=websites%2Fprojects-kde-org.git&a=atom")
+  return feed.entries.first.id
+end
+=end
+
 class Project < ActiveRecord::Base
   attr_accessible :bugLists, :describtion, :gitRepositories, :ircChannels, :mailLists, :name
   
+  def test_git
+    return search_git
+  end
+  
   def number_of_bugs
     num = Rails.cache.read('numBugs'+id.to_s)
-    return num if num
+    #if num
+    #  return num[0] if search_bugzilla([],0,0,false,num[1]).length == 0
+    #end
+    return num[0] if num
     if count_bugs
-      return Rails.cache.read('numBugs'+id.to_s)
+      return Rails.cache.read('numBugs'+id.to_s)[0]
     end
     return "Not found."
   end

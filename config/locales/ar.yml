@@ -1,0 +1,66 @@
+ar:
+  ltr: false 
+  hello: "اهلا"
+  site_title: "مشاريع KDE"
+  home: "الرئيسية"
+  latest_projects: "آخر المشاريع"
+  latest_news: "آخر الأخبار!"
+  all_projects: "كل المشاريع"
+  project_page: "صفحة المشروع"
+  new_project: "مشروع جديد"
+  new: "جديد"
+  bugs: "علل"
+  bug: "علة"
+  number_of_bugs: "عدد العلل غير المحلولة"
+  git: "Git"
+  mailLists: "قوائم بريدية"
+  irc_channels: "قنوات IRC"
+  bug_report: "تقرير العلل"
+  git_report: "تقرير Git"
+  mailList_report: "تقرير القوائم البريدية"
+  irc_report: "تقرير قنوات IRC"
+  confirmed: "مؤكدة"
+  unconfirmed: "غير مؤكدة"
+  assigned: "معينة"
+  reopened: "معاد فتحها"
+  resolved: "محلولة"
+  needsinfo: "تحتاج معلومات"
+  verified: "محققة"
+  id: "ID"
+  component: "العنصر"
+  assignee: "المعين"
+  status: "الحالة"
+  summary: "الملخص"
+  changed: "آخر تغيير"
+  under_construction: "تحت الإنشاء"
+  activerecord:
+    models:
+      project: 
+        one: "مشروع"
+        two: "مشروعان"
+        other: "مشاريع"
+    attributes: 
+      project:
+        name: "الاسم"
+        describtion: "الوصف"
+        bugLists: "أسماء منتجات Bugzilla (واحد لكل سطر)"
+        gitRepositories: "مستودعات Git (واحد لكل سطر)"
+        mailLists: "قوائم بريدية (واحد لكل سطر)"
+        ircChannels: "قنوات IRC (واحدة لكل سطر)"
+  helpers:
+    submit:
+      create: "انشئ %{model}"
+      update: "تأكيد التغييرات"
+    links:
+      cancel: "إلغاء"
+      new: "جديد"
+      destroy: "حذف"
+      edit: "تعديل"
+      back: "للخلف"
+      confirm: "هل انت متأكد؟"
+    titles:
+      edit: "تعديل ال%{model}"
+  will_paginate:
+    page_gap: "..."
+    next_label: "التالى"
+    previous_label: "السابق"

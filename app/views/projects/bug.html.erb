@@ -1,29 +1,20 @@
 <div class="page-header">
-  <h1 class="text-center"><%= @project.name.upcase %> Bugs</h1>
+  <h1 class="text-center"><%= @project.name.upcase %> <%= t :bugs %></h1>
 </div>
 <div class="row-fluid">
   <div class="span3">
-    <div class="well sidebar-nav">
-            <ul class="nav nav-list">
-              <li class="nav-header"><%= @project.name %></li>
-              <li><%= link_to "Project Page", project_path %></li>
-              <li><%= link_to "Bug Report", bug_project_path %></li>
-              <li class="disabled"><%= link_to "Git Report", git_project_path %></li>
-              <li class="disabled"><%= link_to "Maillists Report", mailList_project_path %></li>
-              <li class="disabled"><%= link_to "IRC Channels Report", ircChannel_project_path %></li>
-            </ul>
-    </div><!--/.well -->
+    <%= render :partial => 'sidebar' %>
   </div>
   <div class="span9">    
     <table class="table table-striped">
       <thead>
 	<tr>
-	  <th class="bugsTableHead">ID</th>
-	  <th class="bugsTableHead">Component</th>
-	  <th class="bugsTableHead">Assignee</th>
-	  <th class="bugsTableHead">Status</th>
-	  <th class="bugsTableHead">Summary</th>
-	  <th class="bugsTableHead">Changed</th>
+	  <th class="bugsTableHead"><%= t :id %></th>
+	  <th class="bugsTableHead"><%= t :component %></th>
+	  <th class="bugsTableHead"><%= t :assignee %></th>
+	  <th class="bugsTableHead"><%= t :status %></th>
+	  <th class="bugsTableHead"><%= t :summary %></th>
+	  <th class="bugsTableHead"><%= t :changed %></th>
 	</tr>
       </thead>
       <tbody>

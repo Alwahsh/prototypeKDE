@@ -1,0 +1,14 @@
+ar:
+  helpers:
+    actions: "تطبيقات"
+    links:
+      back: "للخلف"
+      cancel: "إلغاء"
+      confirm: "هل انت متأكد؟"
+      destroy: "حذف"
+      new: "جديد"
+    titles:
+      edit: "تعديل"
+      save: "حفظ"
+      new: "جديد"
+      delete: "حذف"

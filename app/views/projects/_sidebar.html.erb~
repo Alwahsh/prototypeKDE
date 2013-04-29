@@ -1,0 +1,10 @@
+    <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header"><%= @project.name %></li>
+              <li><%= link_to t('project_page'), project_path %></li>
+              <li><%= link_to t('bug_report'), bug_project_path %></li>
+              <li class="disabled"><%= link_to t('git_report'), git_project_path %></li>
+              <li class="disabled"><%= link_to t('mailList_report'), mailList_project_path %></li>
+              <li class="disabled"><%= link_to t('irc_report'), ircChannel_project_path %></li>
+            </ul>
+    </div><!--/.well -->

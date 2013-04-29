@@ -86,7 +86,8 @@ class ProjectsController < ApplicationController
   def bug
     @project = Project.find(params[:id])
     @bugs = @project.limited_bugs(params[:page],10)
-    @bugsPages = @project.all_bugs.paginate(:page => params[:page],:per_page => 10)
+    @numBugs = Array.new(@project.number_of_bugs,nil)
+    @bugsPages = @numBugs.paginate(:page => params[:page],:per_page => 10)
   end
   
   def git

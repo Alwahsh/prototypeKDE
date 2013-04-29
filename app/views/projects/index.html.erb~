@@ -1,13 +1,13 @@
 <%- model_class = Project -%>
 <div class="page-header">
-  <h1><%=t '.title', :default => model_class.model_name.human.pluralize %></h1>
+  <h1><%=t '.title', :default => model_class.model_name.human(count: 3) %></h1>
 </div>
 <table class="table table-striped">
   <thead>
     <tr>
       <th><%= model_class.human_attribute_name(:name) %></th>
-      <th><%= Description %></th>
-      <th>Number of bugs</th>      
+      <th><%= model_class.human_attribute_name(:describtion) %></th>
+      <th><%= t :number_of_bugs %></th>      
     </tr>
   </thead>
   <tbody>

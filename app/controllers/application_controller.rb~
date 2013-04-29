@@ -1,10 +1,11 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   before_filter :set_locale
-def set_locale
-  # If params[:locale] is nil then I18n.default_locale will be used
-  # Set I18n.default_locale in config/application.rb
-  I18n.locale = params[:locale]
+  def set_locale
+    cookies.permanent[:lang] = params[:lang] if params[:lang].present?
+    I18n.locale = cookies[:lang] if cookies[:lang].present?
+    
+  end
 end
-end
+
 

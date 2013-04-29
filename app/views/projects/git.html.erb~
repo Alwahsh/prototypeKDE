@@ -17,10 +17,11 @@
   <div class="span9">
     <div class="hero-unit">
       <h1>You shouldn't be HERE!</h1>
+      <!--<p><%= @project.test_git %></p> -->
       <p>A big Monster might eat YOU!</p>
       <p>
-	<a class="btn btn-primary btn-large">
-	  Learn more
+	<a class="btn btn-primary btn-large" href="http://www.wallpaperdev.com/customres/1024x768-hd-dakar-monster-energy-cars-tacspx-wallpapers-free.jpg">
+	  RUN NOW!!!
 	</a>
       </p>
     </div>

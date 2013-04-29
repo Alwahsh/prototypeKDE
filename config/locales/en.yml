@@ -3,3 +3,68 @@
 
 en:
   hello: "Hello world"
+  site_title: "KDE Projects"
+  home: "Home"
+  latest_projects: "Latest Projects"
+  latest_news: "Latest News!"
+  all_projects: "All Projects"
+  project_page: "Project Page"
+  new_project: "New Project"
+  new: "New"
+  bugs: "Bugs"
+  bug: "Bug"
+  number_of_bugs: "Number of unresolved Bugs"
+  git: "Git"
+  mailLists: "Mailing Lists"
+  irc_channels: "IRC Channels"
+  bug_report: "Bug Report"
+  git_report: "Git Report"
+  mailList_report: "Mailing lists Report"
+  irc_report: "IRC Channels Report"
+  confirmed: "Confirmed"
+  unconfirmed: "Unconfirmed"
+  assigned: "Assigned"
+  reopened: "Reopened"
+  resolved: "Resolved"
+  needsinfo: "Needs Info"
+  verified: "Verified"
+  id: "ID"
+  component: "Component"
+  assignee: "Assignee"
+  status: "Status"
+  summary: "Summary"
+  changed: "Changed"
+  under_construction: "Under Construction"
+  activerecord:
+    models:
+      project: 
+        one: "Project"
+        other: "Projects"
+    attributes: 
+      project:
+        name: "Name"
+        describtion: "Description"
+        bugLists: "Bugzilla Product Names (One per line)"
+        gitRepositories: "Git Repositories (One per line)"
+        mailLists: "Mail Lists (One per line)"
+        ircChannels: "IRC Channels (One per line)"
+  helpers:
+    submit:
+      create: "Create a %{model}"
+      update: "Confirm Changes"
+    links:
+      cancel: "Cancel"
+      new: "New"
+      destroy: "Delete"
+      edit: "Edit"
+      back: "Back"
+      confirm: "Are you sure?"
+    titles:
+      edit: "Edit %{model}"
+      new: "New"
+  will_paginate:
+    page_gap: "..."
+    next_label: "Next"
+    previous_label: "Previous"
+    
+    
