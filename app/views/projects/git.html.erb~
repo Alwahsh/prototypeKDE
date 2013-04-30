@@ -3,27 +3,38 @@
 </div>
 <div class="row-fluid">
   <div class="span3">
-    <div class="well sidebar-nav">
-            <ul class="nav nav-list">
-              <li class="nav-header"><%= @project.name %></li>
-              <li><%= link_to "Project Page", project_path %></li>
-              <li><%= link_to "Bug Report", bug_project_path %></li>
-              <li class="disabled"><%= link_to "Git Report", git_project_path %></li>
-              <li class="disabled"><%= link_to "Maillists Report", mailList_project_path %></li>
-              <li class="disabled"><%= link_to "IRC Channels Report", ircChannel_project_path %></li>
-            </ul>
-    </div><!--/.well -->
+    <%= render :partial => 'sidebar' %>
   </div>
   <div class="span9">
-    <div class="hero-unit">
-      <h1>You shouldn't be HERE!</h1>
-      <!--<p><%= @project.test_git %></p> -->
-      <p>A big Monster might eat YOU!</p>
-      <p>
-	<a class="btn btn-primary btn-large" href="http://www.wallpaperdev.com/customres/1024x768-hd-dakar-monster-energy-cars-tacspx-wallpapers-free.jpg">
-	  RUN NOW!!!
-	</a>
-      </p>
+  <% @project.array_repos.each do |repo| %>
+    <div class="well well-small">
+      <div class="btn-group">
+	<button class="btn"><%= t :git %></button>
+	<input type="text" name="country" value="Norway" readonly>
+      </div>
     </div>
+  <% end %>
+    <table class="table table-striped">
+      <thead>
+	<tr>
+	  <th><%= t :id %></th>
+	  <th><%= t :title %></th>
+	  <th><%= t :author %></th>
+	  <th><%= t :date_time %></th>
+	  <th><%= t :files_changed %></th>
+	</tr>
+      </thead>
+      <tbody>
+	<% @git.each do |commit| %>
+	  <tr>
+	    <td><a href="<%= commit.id %>"><%= commit.id[commit.id.index('h=')+2..commit.id.index('h=')+9] %></a></td>
+	    <td><%= commit.title %></td>
+	    <td><%= commit.author %></td>
+	    <td><%= commit.published.to_s[0..18] %></td>
+	    <td><%= commit.content.scan("\n").length-8 %></td>
+	  </tr>
+	<% end %>
+      </tbody>
+    </table>
   </div>
 </div>

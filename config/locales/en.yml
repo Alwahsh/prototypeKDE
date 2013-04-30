@@ -14,7 +14,9 @@ en:
   bugs: "Bugs"
   bug: "Bug"
   number_of_bugs: "Number of unresolved Bugs"
+  latest_reported_bug: "Latest Reported Bug"
   git: "Git"
+  latest_commit: "Latest Commit"
   mailLists: "Mailing Lists"
   irc_channels: "IRC Channels"
   bug_report: "Bug Report"
@@ -34,6 +36,10 @@ en:
   status: "Status"
   summary: "Summary"
   changed: "Changed"
+  title: "Title"
+  author: "Author"
+  date_time: "Date&Time"
+  files_changed: "Changed Files"
   under_construction: "Under Construction"
   activerecord:
     models:

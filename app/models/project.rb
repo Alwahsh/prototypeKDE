@@ -1,5 +1,5 @@
 require 'open-uri'
-#require 'feedzirra'
+require 'feedzirra'
 
 
 def search_bugzilla include_fields,limit=0,offset=0,getAll=false,creation_time = nil
@@ -16,7 +16,6 @@ end
 
 def get_time_as_string time
   return time.strftime("%Y-%m-%dT%H:%M:%SZ")
-  time.year + '-' + time.month + '-' + time.mday + 'T' + time.hour + ':' + time.minute + ':' + time.second + 'Z'
 end
 
 def get_array text_to_parse
@@ -32,15 +31,6 @@ def convert_array_to_string_array to_convert
   return converted[0..-2] + "]"
 end
 
-def fetch_bugs 
-  is_successful = search_bugzilla ["id","status"],0,0,true
-  if is_successful
-    num = is_successful.length
-    Rails.cache.write('bugsFor'+id.to_s , is_successful)
-    return true
-  end
-  return false
-end
 
 def count_bugs
   is_successful = search_bugzilla []
@@ -52,18 +42,38 @@ def count_bugs
   return false
 end
 
-=begin
-def search_git
-  feed = Feedzirra::Feed.fetch_and_parse("http://quickgit.kde.org/?p=websites%2Fprojects-kde-org.git&a=atom")
-  return feed.entries.first.id
+
+def search_git product_name
+  full_string = "http://quickgit.kde.org/?p="
+  full_string += product_name.chomp
+  full_string += "&a=atom"
+  feed = Feedzirra::Feed.fetch_and_parse(full_string)
+  return [] unless feed
+  unless Rails.cache.read("last_commit"+id.to_s)
+    Rails.cache.write("last_commit"+id.to_s,[feed.entries.first.id,feed.last_modified])
+  else
+    Rails.cache.write("last_commit"+id.to_s,[feed.entries.first.id,feed.last_modified]) if feed.last_modified > Rails.cache.read("last_commit"+id.to_s)[1]
+  end
+  return feed.entries
 end
-=end
 
 class Project < ActiveRecord::Base
   attr_accessible :bugLists, :describtion, :gitRepositories, :ircChannels, :mailLists, :name
   
   def test_git
-    return search_git
+    commits = []
+    the_array = get_array(gitRepositories)
+    the_array.each { |product|
+      entries = search_git product
+      entries.each { |entry|
+	commits << entry
+      }
+    }
+    return commits
+  end
+  
+  def array_repos
+    return get_array(gitRepositories)
   end
   
   def number_of_bugs
@@ -77,18 +87,7 @@ class Project < ActiveRecord::Base
     end
     return "Not found."
   end
-  
-  # gets all bugs with status only.
-  def all_bugs
-    bugs = Rails.cache.read('bugsFor'+id.to_s)
-      if !bugs
-	if !fetch_bugs
-	  return []
-	end
-      end
-    return Rails.cache.read('bugsFor'+id.to_s)
-  end
-  
+    
   # gets limited number of bugs but with all needed attributes.
   def limited_bugs offset, number = 10
     if !offset
@@ -99,23 +98,42 @@ class Project < ActiveRecord::Base
     return []
   end
   
-  def bugs_by_state
-    bugs_hash = Hash.new()
-    bugs = all_bugs
-    bugs_hash["UNCONFIRMED"] = []
-    bugs_hash["CONFIRMED"] = []
-    bugs_hash["ASSIGNED"] = []
-    bugs_hash["REOPENED"] = []
-    bugs_hash["RESOLVED"] = []
-    bugs_hash["NEEDSINFO"] = []
-    bugs_hash["VERIFIED"] = []
-    bugs_hash["CLOSED"] = []
-    bugs.each do |bug|
-      status = bug["status"]
-      bugs_hash[status] << status
+  def latest_bug 
+    latest = Rails.cache.read("latest_bug"+id.to_s)
+    return latest if latest
+    successful = search_bugzilla ["id","creation_time"]
+    last = successful[0]
+    unless last 
+      Rails.cache.write("latest_bug"+id.to_s,"")
+      return ""
     end
-    return bugs_hash
+    successful.each { |bug|
+      if bug["creation_time"] > last["creation_time"]
+	last = bug
+      end
+    }
+    Rails.cache.write("latest_bug"+id.to_s,last)
+    return last
   end
-    
+  
+  def bugs_by_state
+    bugs = Rails.cache.read("bugsFor"+id.to_s)
+    return bugs[0] if bugs
+    successful = search_bugzilla ["id","status"],0,0,true
+    return nil unless successful
+    bugs = Hash.new(0)
+    successful.each do |bug|
+      bugs[bug["status"]] += 1
+      end  
+      Rails.cache.write("bugsFor"+id.to_s,[bugs,Time.now])
+    return bugs
+  end
+  
+  def latest_commit
+    latest = Rails.cache.read("last_commit"+id.to_s)
+    return latest if latest
+    return Rails.cache.read("last_commit"+id.to_s) if test_git != []
+    return ["",""]
+  end
   
 end

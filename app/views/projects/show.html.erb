@@ -24,16 +24,18 @@
 	</thead>
 	<tbody>
 	  <tr>
-	    <td class="bugsTable"><%= @bugs_by_state["CONFIRMED"].length %></td>
-	    <td class="bugsTable"><%= @bugs_by_state["UNCONFIRMED"].length %></td>
-	    <td class="bugsTable"><%= @bugs_by_state["ASSIGNED"].length %></td>
-	    <td class="bugsTable"><%= @bugs_by_state["REOPENED"].length %></td>
-	    <td class="bugsTable"><%= @bugs_by_state["RESOLVED"].length %></td>
-	    <td class="bugsTable"><%= @bugs_by_state["NEEDSINFO"].length %></td>
-	    <td class="bugsTable"><%= @bugs_by_state["VERIFIED"].length %></td>
+	    <td class="bugsTable"><%= @bugs_by_state["CONFIRMED"] %></td>
+	    <td class="bugsTable"><%= @bugs_by_state["UNCONFIRMED"] %></td>
+	    <td class="bugsTable"><%= @bugs_by_state["ASSIGNED"] %></td>
+	    <td class="bugsTable"><%= @bugs_by_state["REOPENED"] %></td>
+	    <td class="bugsTable"><%= @bugs_by_state["RESOLVED"] %></td>
+	    <td class="bugsTable"><%= @bugs_by_state["NEEDSINFO"] %></td>
+	    <td class="bugsTable"><%= @bugs_by_state["VERIFIED"] %></td>
 	  </tr>
 	</tbody>
-      </table>
+      </table>     
+    <div id="bug_chart" style="height:400px;" class="well well-large">
+    </div>
     </div>
     <div class = "well well-small">
       <h3><%= t :git %>:</h3>
@@ -60,3 +62,53 @@
       </div>
   </div>
 </div>
+<% content_for :scripts do %>
+  <script>
+    $(function() {
+      new Highcharts.Chart({
+      chart: {
+	renderTo: "bug_chart"
+      },
+      title: {
+	text: "Bugs"
+      },
+      tooltip: {
+	pointFormat: '<b>{point.y}</b>',
+	percentageDecimals: 1
+      },
+      plotOptions: {
+	pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        color: '#000000',
+                        connectorColor: '#000000',
+                        formatter: function() {
+                            return '<b>'+ this.point.name +'</b>: '+ this.percentage.toFixed(1) +' %';
+                        }
+                    }
+             }
+      },
+      series: [{
+                type: 'pie',
+                name: 'Bugs',
+                data: [
+		  <% @bugs_by_state.sort_by{|k,v| v}.each do |k,v| %>
+		    <% if k == "CONFIRMED" %>
+		      {
+			name: '<%= k %>',
+			y: <%= v %>,
+			sliced: true,
+			selected: true
+		      },
+		    <% else %>
+		      ['<%= k %>',<%= v %>],
+		    <% end %>
+		  <% end %>
+                ]
+            }]
+      });
+    });
+  </script>
+<% end %>

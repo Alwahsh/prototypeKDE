@@ -3,8 +3,6 @@ class ProjectsController < ApplicationController
   # GET /projects.json
   def index
     @projects = Project.all.paginate(:page => params[:page],:per_page => 20)
-
-
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @projects }
@@ -18,7 +16,7 @@ class ProjectsController < ApplicationController
     @bugs_by_state = @project.bugs_by_state
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: @project }
+      format.json { render json: @bugs_by_state}
     end
   end
 
@@ -75,7 +73,6 @@ class ProjectsController < ApplicationController
   # DELETE /projects/1.json
   def destroy
     @project = Project.find(params[:id])
-    @project.destroy
 
     respond_to do |format|
       format.html { redirect_to projects_url }
@@ -88,10 +85,15 @@ class ProjectsController < ApplicationController
     @bugs = @project.limited_bugs(params[:page],10)
     @numBugs = Array.new(@project.number_of_bugs,nil)
     @bugsPages = @numBugs.paginate(:page => params[:page],:per_page => 10)
+    respond_to do |format|
+      format.html # new.html.erb
+      format.json { render json: @bugs }
+    end
   end
   
   def git
     @project = Project.find(params[:id])
+    @git = @project.test_git
   end
   
   def mailList

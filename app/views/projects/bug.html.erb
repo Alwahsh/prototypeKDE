@@ -30,6 +30,6 @@
 	<% end %>
       </tbody>
     </table>
-    <%= will_paginate @bugsPages %>
+    <%= will_paginate @bugsPages, :renderer => BootstrapPagination::Rails %>
   </div>
 </div>

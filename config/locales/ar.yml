@@ -12,7 +12,9 @@ ar:
   bugs: "علل"
   bug: "علة"
   number_of_bugs: "عدد العلل غير المحلولة"
+  latest_reported_bug: "آخر علة مبلغ عنها"
   git: "Git"
+  latest_commit: "آخر إيداع"
   mailLists: "قوائم بريدية"
   irc_channels: "قنوات IRC"
   bug_report: "تقرير العلل"
@@ -32,6 +34,10 @@ ar:
   status: "الحالة"
   summary: "الملخص"
   changed: "آخر تغيير"
+  title: "العنوان"
+  author: "الكاتب"
+  date_time: "الوقت و التاريخ"
+  files_changed: "الملفات المتغيرة"
   under_construction: "تحت الإنشاء"
   activerecord:
     models:
