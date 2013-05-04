@@ -1,6 +1,6 @@
 require 'open-uri'
 require 'feedzirra'
-
+require 'git'
 
 def search_bugzilla include_fields,limit=0,offset=0,getAll=false,creation_time = nil
   full_string = 'https://bugs.kde.org/jsonrpc.cgi?method=Bug.search&params=[{"product":'+convert_array_to_string_array(get_array(bugLists))+',"include_fields":'+ convert_array_to_string_array(include_fields)
@@ -57,6 +57,25 @@ def search_git product_name
   return feed.entries
 end
 
+def search_commits limit = nil
+  begin
+  the_array = get_array(gitRepositories)
+  rescue Exception
+    return nil
+  end
+  commits = []
+  the_array.each { |product|
+    begin
+      g = Git.bare('.', { :repository => 'gitMirror/' + product ,:index => '.' })
+      g.log(limit).each { |commit|
+	commits << commit
+    }
+    rescue Exception
+    end
+  }
+  return commits
+end
+
 class Project < ActiveRecord::Base
   attr_accessible :bugLists, :describtion, :gitRepositories, :ircChannels, :mailLists, :name
   
@@ -69,6 +88,28 @@ class Project < ActiveRecord::Base
 	commits << entry
       }
     }
+    return commits
+  end
+  
+  def fetch_project_repos 
+    the_array = get_array(gitRepositories)
+    the_array.each { |product|
+      g = Git.clone('git://anongit.kde.org/'+product.chomp, 'gitMirror/' + product.chomp, :bare => true)
+      #add rescue
+    }
+  end
+  handle_asynchronously :fetch_project_repos
+  
+  def commits_per_author
+    commits = Rails.cache.read("commits_per_author"+id.to_s)
+    return commits if commits
+    successful = search_commits
+    return nil unless successful
+    commits = Hash.new(0)
+    successful.each do |commit|
+      commits[commit.author.name] += 1
+    end  
+    Rails.cache.write("commits_per_author"+id.to_s,commits) unless commits.length == 0
     return commits
   end
   

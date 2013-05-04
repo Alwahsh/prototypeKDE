@@ -34,13 +34,13 @@
 	  </tr>
 	</tbody>
       </table>     
-    <div id="bug_chart" style="height:400px;" class="well well-large">
-
-    </div>
+      <div id="bug_chart" style="height:400px;" class="well well-large">
+      </div>
     </div>
     <div class = "well well-small">
       <h3><%= t :git %>:</h3>
-      <p><%= t :under_construction %>.</p>
+      <div id="commit_chart" style="height:400px;" class="well well-large">
+      </div>
     </div>
     <div class = "well well-small">
       <h3><%= t :mailLists %>:</h3>
@@ -106,6 +106,41 @@
 		    <% else %>
 		      ['<%= k %>',<%= v %>],
 		    <% end %>
+		  <% end %>
+                ]
+            }]
+      });
+      new Highcharts.Chart({
+      chart: {
+	renderTo: "commit_chart"
+      },
+      title: {
+	text: "Total Commits"
+      },
+      tooltip: {
+	pointFormat: '<b>{point.y}</b>',
+	percentageDecimals: 1
+      },
+      plotOptions: {
+	pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        color: '#000000',
+                        connectorColor: '#000000',
+                        formatter: function() {
+                            return '<b>'+ this.point.name +'</b>: '+ this.percentage.toFixed(1) +' %';
+                        }
+                    }
+             }
+      },
+      series: [{
+                type: 'pie',
+                name: 'Bugs',
+                data: [
+		  <% @project.commits_per_author.sort_by{|k,v| v}.each do |k,v| %>
+		      ['<%= k %>',<%= v %>],
 		  <% end %>
                 ]
             }]

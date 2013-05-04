@@ -41,9 +41,9 @@ class ProjectsController < ApplicationController
   # POST /projects.json
   def create
     @project = Project.new(params[:project])
-
     respond_to do |format|
       if @project.save
+	@project.fetch_project_repos
         format.html { redirect_to @project, notice: 'Project was successfully created.' }
         format.json { render json: @project, status: :created, location: @project }
       else
@@ -57,9 +57,13 @@ class ProjectsController < ApplicationController
   # PUT /projects/1.json
   def update
     @project = Project.find(params[:id])
-
+    @temp = @project.gitRepositories
     respond_to do |format|
       if @project.update_attributes(params[:project])
+	if @temp != @project
+	  @project.fetch_project_repos
+	  Rails.cache.delete("commits_per_author"+@project.id.to_s)
+	end
         format.html { redirect_to @project, notice: 'Project was successfully updated.' }
         format.json { head :no_content }
       else
@@ -73,7 +77,7 @@ class ProjectsController < ApplicationController
   # DELETE /projects/1.json
   def destroy
     @project = Project.find(params[:id])
-
+    @project.destroy
     respond_to do |format|
       format.html { redirect_to projects_url }
       format.json { head :no_content }

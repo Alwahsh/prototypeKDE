@@ -29,7 +29,10 @@ end
 gem 'jquery-rails'
 gem 'will_paginate', '~> 3.0'
 gem 'will_paginate-bootstrap'
-gem 'grit'
+gem 'git'
+gem 'daemons'
+gem 'delayed_job'
+gem 'delayed_job_active_record'
 gem 'feedzirra'
 
 # To use ActiveModel has_secure_password
