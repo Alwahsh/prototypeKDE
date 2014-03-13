@@ -76,6 +76,7 @@ def search_commits limit = nil
   return commits
 end
 
+
 class Project < ActiveRecord::Base
   attr_accessible :bugLists, :describtion, :gitRepositories, :ircChannels, :mailLists, :name
   
@@ -177,4 +178,113 @@ class Project < ActiveRecord::Base
     return ["",""]
   end
   
+  
+  def prepare_commits_line_graphs_all_time
+    product = git_repos.chomp
+    res_commits = Array.new
+    the_array = Project.repo(product).log(nil).to_a.reverse
+    first = the_array.shift
+    Rails.cache.write("first_date_commits"+id.to_s,first.date.to_i * 1000)
+    res_commits << 1
+    last_date = first.date.utc.strftime("%d%m%Y")
+    the_array.each do |commit|
+      this_date = commit.date.utc.strftime("%d%m%Y")
+      if last_date == this_date
+        res_commits[-1]+= 1 
+      else
+        temp_date = this_date
+        last_date = DateTime.strptime(last_date,"%d%m%Y")
+        this_date = DateTime.strptime(this_date,"%d%m%Y")
+        ((this_date-last_date).to_i-1).times do 
+          res_commits << 0
+        end
+        last_date = temp_date
+        res_commits << 1
+      end
+    end
+    ((DateTime.now.beginning_of_day-DateTime.strptime(last_date,"%d%m%Y")).to_i-1).times do
+      res_commits << 0
+      res_committers << 0
+    end
+    Rails.cache.write("commits_all_time"+id.to_s,res_commits)
+  end
+  
+  
+  def self.prepare_kde_facebook_report
+    graph = Koala::Facebook::API.new("app_token_here")
+    feed = graph.get_page("kde/feed")
+    res = Array.new
+    start_date = DateTime.parse(feed.first["created_time"])
+    last_date = start_date.utc.strftime("%d%m%Y")
+    starting_date = DateTime.now.to_i * 1000
+    ((DateTime.now.beginning_of_day-DateTime.strptime(last_date,"%d%m%Y")).to_i).times do
+      res << 0
+    end
+    res << 0
+    while(feed.length != 0) 
+      feed.each do |f|
+	this_date = DateTime.parse(f["created_time"]).utc.strftime("%d%m%Y")
+	if last_date == this_date
+	  res[-1]+= 1 
+	else
+	  temp_date = this_date
+	  last_date = DateTime.strptime(last_date,"%d%m%Y")
+	  this_date = DateTime.strptime(this_date,"%d%m%Y")
+	  ((last_date-this_date).to_i-1).times do 
+	    res << 0
+	  end
+	  last_date = temp_date
+	  res << 1
+	end
+      end
+      starting_date = DateTime.parse(feed.last["created_time"]).utc.to_i * 1000
+      feed = feed.next_page
+    end
+    db = FbStats.find_by_project_id(0)
+    db.forum_start_date = starting_date.to_s
+    db.forum_stats = res.reverse.to_s
+    db.save
+  end
+  
+  def self.prepare_total_forum_posts
+    num = 0
+    link = "https://forum.kde.org/search.php?keywords=&terms=all&author=&tags=&sv=0&sc=1&sf=titleonly&sk=t&sd=d&st=0&feed_type=RSS2.0&feed_style=COMPACT&countlimit=100&submit=Search"
+    feed = Feedzirra::Feed.fetch_and_parse(link).entries
+    res = Array.new
+    start_date = DateTime.parse(feed.first.published.to_s)
+    last_date = start_date.utc.strftime("%d%m%Y")
+    starting_date = DateTime.now.to_i * 1000
+    ((DateTime.now.beginning_of_day-DateTime.strptime(last_date,"%d%m%Y")).to_i).times do
+      res << 0
+    end
+    res << 0
+    while(feed.length != 0) 
+      feed.each do |f|
+	this_date = DateTime.parse(f.published.to_s).utc.strftime("%d%m%Y")
+	if last_date == this_date
+	  res[-1]+= 1 
+	else
+	  temp_date = this_date
+	  last_date = DateTime.strptime(last_date,"%d%m%Y")
+	  this_date = DateTime.strptime(this_date,"%d%m%Y")
+	  ((last_date-this_date).to_i-1).times do 
+	    res << 0
+	  end
+	  last_date = temp_date
+	  res << 1
+	end
+      end
+      starting_date = DateTime.parse(feed.last.published.to_s).utc.to_i * 1000
+      num+= 100
+      link = "https://forum.kde.org/search.php?keywords=&terms=all&author=&tags=&sv=0&sc=1&sf=titleonly&sk=t&sd=d&st=0&feed_type=RSS2.0&feed_style=COMPACT&countlimit=100&submit=Search&start=#{num}"
+      if num == 300
+	break
+      end
+      feed = Feedzirra::Feed.fetch_and_parse(link).entries
+    end
+    db = FbStats.find_by_project_id(0)
+    db.forum_start_date = starting_date.to_s
+    db.forum_stats = res.reverse.to_s
+    db.save
+  end
 end

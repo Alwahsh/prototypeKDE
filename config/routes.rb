@@ -1,4 +1,6 @@
 PrototypeKDE::Application.routes.draw do
+
+
   resources :projects do
     get 'bug',:on=>:member
     get 'git',:on=>:member
@@ -8,7 +10,7 @@ PrototypeKDE::Application.routes.draw do
 
 
   get "home/index"
-
+  get "/general_report", :to => "home#general_report"
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

@@ -1,3 +1,5 @@
 This application is a prototype for the application I want to make as my GSoC project for KDE. While designing the real application,
 I'd have to care about i18n & l10n and may be even translate it. The final version might be much different than this one. It all depends
 on the opinion of the mentor and the developers who'd use this application.
+
+Now I continue to add new features for my proposal this year. Now I've added Facebook posts report

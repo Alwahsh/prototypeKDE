@@ -11,7 +11,8 @@ end
 group :production do
   gem 'pg'
 end
-
+gem "feedzirra", git: "https://github.com/pauldix/feedzirra.git"
+gem "koala", "~> 1.8.0rc1"
 gem 'twitter-bootstrap-rails'
 # Gems used only for assets and not required
 # in production environments by default.
@@ -26,6 +27,7 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
+gem 'pry'
 gem 'jquery-rails'
 gem 'will_paginate', '~> 3.0'
 gem 'will_paginate-bootstrap'
@@ -33,7 +35,6 @@ gem 'git'
 gem 'daemons'
 gem 'delayed_job'
 gem 'delayed_job_active_record'
-gem 'feedzirra'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
