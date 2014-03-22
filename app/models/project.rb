@@ -258,7 +258,7 @@ class Project < ActiveRecord::Base
       res << 0
     end
     res << 0
-    while(feed.length != 0) 
+    while(true) 
       feed.each do |f|
 	this_date = DateTime.parse(f.published.to_s).utc.strftime("%d%m%Y")
 	if last_date == this_date
@@ -275,12 +275,17 @@ class Project < ActiveRecord::Base
 	end
       end
       starting_date = DateTime.parse(feed.last.published.to_s).utc.to_i * 1000
-      num+= 100
+      if feed.length == 100
+	num+= 100
+      else
+	num+= feed.length+1
+      end
       link = "https://forum.kde.org/search.php?keywords=&terms=all&author=&tags=&sv=0&sc=1&sf=titleonly&sk=t&sd=d&st=0&feed_type=RSS2.0&feed_style=COMPACT&countlimit=100&submit=Search&start=#{num}"
-      if num == 300
+      begin
+	feed = Feedzirra::Feed.fetch_and_parse(link).entries
+      rescue
 	break
       end
-      feed = Feedzirra::Feed.fetch_and_parse(link).entries
     end
     db = FbStats.find_by_project_id(0)
     db.forum_start_date = starting_date.to_s
